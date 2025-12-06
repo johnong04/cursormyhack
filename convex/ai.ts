@@ -149,6 +149,12 @@ Return ONLY the enhanced prompt, nothing else.`;
 
       // TODO: Use Gemini Nano Banana for actual image generation when available
       // For now, return a placeholder SVG with the prompt text
+      // Simple sanitization for SVG text content
+      const sanitizeForSvg = (text: string) => 
+        text.replace(/[<>&'"]/g, (c) => 
+          ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', "'": '&#39;', '"': '&quot;' }[c] || c)
+        );
+
       const placeholderImage = `data:image/svg+xml,${encodeURIComponent(`
         <svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
           <rect width="800" height="600" fill="#f3f4f6"/>
@@ -156,7 +162,7 @@ Return ONLY the enhanced prompt, nothing else.`;
             🎨 Comic Illustration
           </text>
           <text x="400" y="300" font-family="Arial" font-size="14" fill="#6b7280" text-anchor="middle" width="700">
-            ${args.prompt.substring(0, 100)}...
+            ${sanitizeForSvg(args.prompt.substring(0, 100))}...
           </text>
           <text x="400" y="350" font-family="Arial" font-size="12" fill="#9ca3af" text-anchor="middle">
             (Image generation placeholder - integrate Nano Banana for production)
