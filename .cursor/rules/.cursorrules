@@ -1,0 +1,14 @@
+# Tech Stack (HARD REQUIREMENTS)
+- **Framework:** Next.js 15 (App Router)
+- **Styling:** Tailwind CSS + Shadcn UI (Use existing components in /components/ui)
+- **Icons:** Lucide React
+- **Backend:** Convex (Do NOT use Supabase/Firebase)
+- **AI/Voice:** Anthropic API (Text), ElevenLabs (Voice), Gemini (Images)
+- **Deployment:** Vercel
+
+# Coding Rules
+- Use "use client" only when necessary (interaction).
+- **Strictly** use the `convex` folder for backend logic.
+- Do not make up external libraries. Use what is installed.
+- If you don't know the Convex syntax, ask me to check documentation.
+
