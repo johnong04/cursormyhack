@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Flame, BookOpen } from "lucide-react";
+import { Flame, BookOpen, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function Navbar() {
@@ -48,6 +48,20 @@ export function Navbar() {
               </Button>
             </Link>
           </div>
+          
+          <Link href="/admin/setup">
+            <Button 
+              variant="ghost" 
+              size="sm"
+              className={cn(
+                "h-7 w-7 p-0 rounded-full hover:bg-muted",
+                pathname?.startsWith("/admin") && "bg-muted"
+              )}
+              title="Admin Setup"
+            >
+              <Settings className="h-4 w-4" />
+            </Button>
+          </Link>
         </div>
       </div>
     </nav>

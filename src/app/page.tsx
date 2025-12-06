@@ -1,4 +1,8 @@
+"use client";
+
 import Link from "next/link";
+import { useQuery } from "convex/react";
+import { api } from "../../convex/_generated/api";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -6,8 +10,26 @@ import { Brain, ArrowRight, Zap } from "lucide-react";
 import { PrimaryCTASection } from "@/components/ui-custom/primary-cta-section";
 import { ProgressBarRow } from "@/components/ui-custom/progress-bar-row";
 import { PredictionList } from "@/components/ui-custom/prediction-list";
+import { getTopSejarahPredictions, getSejarahPredictionMeta } from "@/lib/sejarah-predictions";
 
 export default function Home() {
+  const userProgress = useQuery(api.queries.getUserProgress, { userId: "anonymous" });
+
+  const topicsCompleted = userProgress?.topicsCompleted || 7;
+  const streak = userProgress?.streak || 0;
+
+  // Get top 5 Sejarah predictions
+  const topPredictions = getTopSejarahPredictions(5);
+  const predictionMeta = getSejarahPredictionMeta();
+
+  // Map predictions to PredictionList items
+  const forecastItems = topPredictions.map(pred => ({
+    label: `Bab ${pred.bab}: ${pred.subtopic}`,
+    prob: `${pred.probability_score}%`,
+    severity: pred.probability_label,
+    trend: pred.past_year_trend,
+  }));
+
   return (
     <div className="space-y-8 pb-20">
       {/* 3.1 Simple Header Strip */}
@@ -57,9 +79,9 @@ export default function Home() {
         <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-widest px-1">Your Progress</h2>
         <ProgressBarRow 
           label="Sejarah Mastery"
-          value={7}
+          value={topicsCompleted}
           total={28}
-          subtext="Come back daily to keep your streak"
+          subtext={streak > 0 ? `🔥 ${streak} day streak - Come back daily!` : "Come back daily to keep your streak"}
         />
       </section>
 
@@ -67,14 +89,9 @@ export default function Home() {
       <section className="space-y-3">
         <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-widest px-1">Forecast</h2>
         <PredictionList 
-          title="Malaysia Prediction Heatmap"
-          description="Kelantan & Terengganu are high probability this year."
-          items={[
-            { state: "Kelantan", prob: "90%", isHigh: true },
-            { state: "Terengganu", prob: "90%", isHigh: true },
-            { state: "Kuala Lumpur", prob: "45%" },
-            { state: "Selangor", prob: "40%" },
-          ]}
+          title="SPM 2024 Sejarah Forecast"
+          description={`Based on ${predictionMeta.total_papers_analyzed} ${predictionMeta.source} trial papers.`}
+          items={forecastItems}
         />
       </section>
     </div>
